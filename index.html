@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        a {
+            color: #00acee;
+            text-decoration: none;
+            font-size: 20px;
+        }
+        a:hover {
+            color: #0077cc;
+        }
+        header {
+            padding: 20px;
+        }
+        img.profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 20px 0;
+            border: 2px solid white;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        audio {
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #00acee;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0077cc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>About Me</h1>
+        <p>My name is Eugene Aguilar. I'm a simple CODM creator from San Luis, Pangasinan. I am a high school student, 16 years old.</p>
+    </header>
+    <img 
+        src="https://graph.facebook.com/61562844636633/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662" 
+        alt="Profile Picture" 
+        class="profile-pic"
+    />
+    <main>
+        <p>Follow me on:</p>
+        <p>
+            <a href="https://tiktok.com/@eurixontop09" target="_blank" rel="noopener noreferrer">TikTok</a>
+        </p>
+        <p>
+            <a href="https://www.facebook.com/Eurix.055?mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer">Facebook</a>
+        </p>
+        <audio controls autoplay loop id="audioPlayer">
+            <source src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <br>
+        <button id="nextButton">Next</button>
+    </main>
+    <footer>
+        <p>Thank you for visiting!</p>
+    </footer>
+
+    <script>
+        // Define random Spotify track URLs
+        const random = [
+            "https://open.spotify.com/track/3W4U7TEgILGpq0EmquurtH?si=jvhjfrKfQM-TOxLYQHp8ag",
+            "https://open.spotify.com/track/0uZFcsx96wzbixsULmrg8o?si=1UZ24bf2QxeEoDZX9fPVnQ",
+            "https://open.spotify.com/track/61vyXXtY7OSYFRtSzv5ehw?si=-TpvO_5KRbCJq85xw2GEIA",
+            "https://open.spotify.com/track/1tC2PLqLeJXt0VlgOYpc6m?si=lM7zrarSQ2GXOD8mHLCoBA"
+        ];
+
+        const audioPlayer = document.getElementById("audioPlayer");
+        const nextButton = document.getElementById("nextButton");
+
+        async function fetchAudio(url) {
+            try {
+                const response = await fetch(`/spotifydl?url=${encodeURIComponent(url)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const audioUrl = data?.download?.file_url;
+
+                    if (audioUrl) {
+                        const source = audioPlayer.querySelector("source");
+                        source.src = audioUrl;
+                        audioPlayer.load(); // Reload the audio with the new source
+                    } else {
+                        console.error("Audio URL not found in the response.");
+                    }
+                } else {
+                    console.error("Failed to fetch audio: ", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error fetching audio:", error);
+            }
+        }
+
+        function playNextTrack() {
+            const randomIndex = Math.floor(Math.random() * random.length);
+            const nextSpotifyUrl = random[randomIndex];
+            fetchAudio(nextSpotifyUrl);
+        }
+
+        // Load the first track on page load
+        playNextTrack();
+
+        // Event listener for the "Next" button
+        nextButton.addEventListener("click", playNextTrack);
+    </script>
+</body>
+</html>
